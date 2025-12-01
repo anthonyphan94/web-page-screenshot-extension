@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Screenshot Result</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .controls {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        button {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #357ae8;
+        }
+
+        #preview-container {
+            margin-top: 80px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: white;
+            max-width: 90%;
+            overflow: auto;
+        }
+
+        canvas {
+            display: block;
+            max-width: 100%;
+            /* Responsive preview */
+            height: auto;
+        }
+
+        .loading {
+            margin-top: 100px;
+            font-size: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="controls">
+        <button id="downloadPng">Download PNG</button>
+        <!-- PDF support would require a library like jsPDF, keeping it simple for now with PNG -->
+    </div>
+    <div id="status" class="loading">Processing...</div>
+    <div id="preview-container">
+        <canvas id="resultCanvas"></canvas>
+    </div>
+    <script src="result.js"></script>
+</body>
+
+</html>
