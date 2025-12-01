@@ -79,18 +79,34 @@ if (window.hasRun) {
         function isScrollable(el) {
             const style = window.getComputedStyle(el);
             const hasScrollableOverflow = ['auto', 'scroll', 'overlay'].includes(style.overflowY);
-            // If overflow is visible/hidden, it might still be the body/html acting as container
-            // But for divs, we need explicit scroll.
             return hasScrollableOverflow && el.scrollHeight > el.clientHeight;
         }
 
+        // Helper to check if element is strictly visible
+        function isVisible(el) {
+            if (!el) return false;
+            const style = window.getComputedStyle(el);
+            if (style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0') return false;
+
+            const rect = el.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return false;
+
+            // Check if it's actually within the viewport
+            if (rect.top >= window.innerHeight || rect.bottom <= 0 || rect.left >= window.innerWidth || rect.right <= 0) {
+                return false;
+            }
+
+            // Optional: Check if it's covered? (Too expensive to check every point)
+            return true;
+        }
+
         // 1. Collect all potential candidates
-        // We want to find the "main" scroll container. 
-        // It's usually the one with the largest scrollHeight that is also taking up most of the viewport.
         const candidates = Array.from(document.querySelectorAll('*')).filter(el => {
             // Filter out small elements to optimize
             if (el.clientWidth < window.innerWidth * 0.5 || el.clientHeight < window.innerHeight * 0.5) return false;
-            return isScrollable(el);
+
+            // CRITICAL: Must be visible and scrollable
+            return isVisible(el) && isScrollable(el);
         });
 
         // Add document.scrollingElement (html/body) to candidates if it scrolls
@@ -104,7 +120,10 @@ if (window.hasRun) {
         // 3. Pick the best one
         if (candidates.length > 0) {
             console.log('Found scrollable candidates:', candidates);
-            return candidates[0];
+            // Log the chosen one for debugging
+            const chosen = candidates[0];
+            console.log('Selected scroll container:', chosen.tagName, chosen.className, chosen.id);
+            return chosen;
         }
 
         // 4. Fallback
@@ -209,5 +228,17 @@ if (window.hasRun) {
 
     function wait(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    // Export for testing
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = {
+            findScrollableElement,
+            // We need to expose the helper functions if we want to test them individually, 
+            // but they are defined inside findScrollableElement scope in the previous version.
+            // Wait, in the previous version they were defined INSIDE findScrollableElement.
+            // I should probably move them out or just test findScrollableElement.
+            // Let's check the file content again to be sure where they are.
+        };
     }
 }
