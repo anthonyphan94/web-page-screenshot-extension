@@ -166,3 +166,17 @@ function isVisible(el) {
 1.  **Dynamic Wait Times**: Instead of a hardcoded 1000ms wait, we could use `requestIdleCallback` or observe network activity to capture as soon as the page is settled, speeding up the process.
 2.  **PDF Export**: Currently, we only support PNG. Adding a library like `jsPDF` would allow users to save directly as a multi-page PDF.
 3.  **Virtualization Support**: For complex virtualized lists (where content is destroyed as you scroll), the current "stitch later" approach works, but a "stitch as you go" approach might be more memory efficient for extremely long pages.
+
+## 5. Testing Strategy
+
+To ensure robustness, specifically for the complex scroll detection logic, we implemented a unit testing suite using **Jest**.
+
+*   **Environment**: `jest-environment-jsdom` is used to simulate the browser DOM.
+*   **Mocking**: We mock the `chrome` API and `window` properties (like `innerWidth`, `innerHeight`, `getComputedStyle`) to isolate the logic.
+*   **Coverage**:
+    *   **Scroll Container Detection**: Verifies that the script correctly identifies the largest visible scrollable element.
+    *   **Visibility Checks**: Ensures hidden elements (`display: none`, `visibility: hidden`) are ignored.
+    *   **Off-Screen Elements**: Ensures elements outside the viewport are ignored.
+    *   **Fallbacks**: Verifies that the script falls back to `document.documentElement` when no specific container is found.
+
+Run tests with: `npm test`
