@@ -123,6 +123,35 @@ canvas.toBlob((blob) => {
         saveAs: true
     });
 }, 'image/png');
+    });
+}, 'image/png');
+```
+
+### Challenge 5: The "Phantom Scrollbar" (Repeating Screenshots)
+
+**The Symptom:**
+On some websites, the resulting screenshot would be extremely long but consist of the same viewport image repeated over and over again.
+
+**The Technical Root Cause:**
+The extension's scroll detection logic was finding a "scrollable" element (like a hidden mobile menu or a background wrapper) that had `overflow-y: scroll` but was not actually visible or active. The script would scroll this invisible element, but since the main visible page didn't move, every screenshot captured the exact same view.
+
+**The Fix:**
+We updated `findScrollableElement` to strictly check for visibility. We now verify that the candidate element has `display: block` (not none), `visibility: visible`, non-zero dimensions, and is actually within the viewport bounds.
+
+**Code Snippet:**
+```javascript
+function isVisible(el) {
+    const style = window.getComputedStyle(el);
+    if (style.display === 'none' || style.visibility === 'hidden') return false;
+    
+    const rect = el.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return false;
+    
+    // Check if within viewport
+    if (rect.top >= window.innerHeight || rect.bottom <= 0) return false;
+    
+    return true;
+}
 ```
 
 ## 3. Edge Cases Handled

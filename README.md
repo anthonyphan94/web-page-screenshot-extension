@@ -5,7 +5,7 @@ A robust Chrome Extension (Manifest V3) that captures full-page screenshots of a
 ## Features
 
 *   **Full Page Capture**: Automatically scrolls and stitches the entire page content.
-*   **Smart Scroll Detection**: Intelligently identifies the main scroll container (e.g., `#root`, `#app`, or nested divs).
+*   **Smart Scroll Detection**: Intelligently identifies the main *visible* scroll container (e.g., `#root`, `#app`, or nested divs), ignoring hidden menus.
 *   **High Resolution**: Respects `devicePixelRatio` for crisp screenshots on Retina/High-DPI displays.
 *   **Sticky Element Handling**: Temporarily hides fixed headers/footers during capture to prevent duplication.
 *   **Seamless Stitching**: Uses overlap cropping to ensure perfect alignment without cut-off text.
